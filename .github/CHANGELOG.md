@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1-alpha.4](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.0.1-alpha.3...v1.0.1-alpha.4) (2026-11-06)
+
+
+### Bug Fixes
+
+* use signalwire public CI base image as builder ([267e521](https://github.com/service-marketing/sm-click-freeswitch/commit/267e521666dbab9258f2a8aba65635dd199470ca))
+
 ### [1.0.1-alpha.3](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.0.1-alpha.2...v1.0.1-alpha.3) (2026-11-06)
 
 
