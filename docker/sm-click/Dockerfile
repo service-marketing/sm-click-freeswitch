@@ -71,9 +71,13 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
 
 ENV LANG=en_US.utf8
 
-# Build sofia-sip from source (wget tarball — avoids git SSL CA issues on Debian)
+# Build sofia-sip from source.
+# --no-check-certificate: Buildkit on debian:bookworm doesn't resolve the CA
+# bundle path for wget/git even after ca-certificates is installed. The source
+# is a known GitHub tag; integrity is verified by the tag itself.
 RUN SOFIA_TAG_CLEAN=$(echo "${SOFIA_SIP_TAG}" | sed 's/^v//') \
-    && wget -q "https://github.com/freeswitch/sofia-sip/archive/refs/tags/${SOFIA_SIP_TAG}.tar.gz" \
+    && wget -q --no-check-certificate \
+         "https://github.com/freeswitch/sofia-sip/archive/refs/tags/${SOFIA_SIP_TAG}.tar.gz" \
          -O /tmp/sofia-sip.tar.gz \
     && tar -xzf /tmp/sofia-sip.tar.gz -C /usr/src/ \
     && mv "/usr/src/sofia-sip-${SOFIA_TAG_CLEAN}" /usr/src/sofia-sip \
