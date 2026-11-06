@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.7](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.6...v1.1.0-alpha.7) (2026-11-06)
+
+
+### Bug Fixes
+
+* drop libilbc-dev/libflite1-dev, disable mod_ilbc/mod_flite ([a59813e](https://github.com/service-marketing/sm-click-freeswitch/commit/a59813e449db299f022bb4fea420119279f9f2eb))
+
 ## [1.1.0-alpha.6](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.5...v1.1.0-alpha.6) (2026-11-06)
 
 
