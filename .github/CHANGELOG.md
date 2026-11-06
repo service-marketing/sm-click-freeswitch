@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.3](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.2...v1.1.0-alpha.3) (2026-11-06)
+
+
+### Bug Fixes
+
+* add autoconf-archive, disable mod_av (libvpx build failure) ([2a2ad9a](https://github.com/service-marketing/sm-click-freeswitch/commit/2a2ad9a28b391cacd1438e1fee63ed38ebdd1053))
+
 ## [1.1.0-alpha.2](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.1...v1.1.0-alpha.2) (2026-11-06)
 
 
