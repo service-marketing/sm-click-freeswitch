@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.10](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.9...v1.1.0-alpha.10) (2026-11-06)
+
+
+### Bug Fixes
+
+* force LF line endings for build/script files in .gitattributes ([a2d1fa9](https://github.com/service-marketing/sm-click-freeswitch/commit/a2d1fa95e0cea53161564e340c7c05aa2a8701e5))
+* use git checkout in Docker to apply eol=lf, finalize build deps ([87fca33](https://github.com/service-marketing/sm-click-freeswitch/commit/87fca33cc55979750ca1965121e655c2457bfa7b))
+
 ## [1.1.0-alpha.9](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.8...v1.1.0-alpha.9) (2026-11-06)
 
 
