@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.9](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.8...v1.1.0-alpha.9) (2026-11-06)
+
+
+### Bug Fixes
+
+* disable mod_mongo (deprecated mongoc API, -Werror breaks build) ([95a1ec0](https://github.com/service-marketing/sm-click-freeswitch/commit/95a1ec08c06ee641ae294fcb58c84707bebbd196))
+* remove -Werror from configure.ac before bootstrap ([374560f](https://github.com/service-marketing/sm-click-freeswitch/commit/374560f4efdc103b0a4d9a8a6aed5591b02896c8))
+
 ## [1.1.0-alpha.8](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.7...v1.1.0-alpha.8) (2026-11-06)
 
 
