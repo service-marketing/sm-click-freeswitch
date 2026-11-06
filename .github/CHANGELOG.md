@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.1](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.0...v1.1.0-alpha.1) (2026-11-06)
+
+
+### Bug Fixes
+
+* add missing build deps (sqlite3, mariadb, ffmpeg libs) ([c3f6999](https://github.com/service-marketing/sm-click-freeswitch/commit/c3f6999b56b8b10734a3bb0cbe9b7fd56c66b547))
+
 ## [1.1.0-alpha.0](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.0.1-alpha.5...v1.1.0-alpha.0) (2026-11-06)
 
 
