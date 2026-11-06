@@ -18,7 +18,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     # toolchain
-    build-essential autoconf automake autoconf-archive libtool libtool-bin pkg-config cmake wget yasm \
+    build-essential autoconf automake autoconf-archive libtool libtool-bin pkg-config cmake wget yasm git \
     # TLS / crypto
     libssl-dev \
     # audio / codecs
@@ -80,18 +80,9 @@ RUN SOFIA_CLEAN=$(echo "${SOFIA_SIP_TAG}" | sed 's/^v//') \
 COPY . /usr/src/freeswitch
 WORKDIR /usr/src/freeswitch
 
-RUN sed -i 's/APR_ADDTO(SWITCH_AM_CFLAGS, -Werror)//g' configure.ac \
-    && find . -type f \( -name "*.sh" -o -name "*.m4" -o -name "*.ac" \
-         -o -name "*.pl" -o -name "*.la" -o -name "libtool" \
-         -o -name "configure" -o -name "configure.gnu" \
-         -o -name "config.guess" -o -name "config.sub" \
-         -o -name "install-sh" -o -name "PrintPath" \
-         -o -name "Makefile.in" \) \
-         | xargs sed -i 's/\r$//' \
-    && find . -type f \( -name "*.sh" -o -name "configure" -o -name "configure.gnu" \
-         -o -name "config.guess" -o -name "config.sub" \
-         -o -name "install-sh" -o -name "PrintPath" \) \
-         | xargs chmod +x \
+RUN git checkout -- . \
+    && sed -i 's/APR_ADDTO(SWITCH_AM_CFLAGS, -Werror)//g' configure.ac \
+    && chmod +x bootstrap.sh \
     && ./bootstrap.sh -j \
     && cp build/modules.conf.most modules.conf \
     && sed -i \
@@ -115,8 +106,6 @@ RUN sed -i 's/APR_ADDTO(SWITCH_AM_CFLAGS, -Werror)//g' configure.ac \
          --prefix=/usr/local/freeswitch \
          --exec-prefix=/usr/local/freeswitch \
     && mkdir -p libs/libvpx && ar rcs libs/libvpx/libvpx.a \
-    && find . -name "libtool" -o -name "*.la" | xargs sed -i 's/\r$//' \
-    && find . -name "libtool" | xargs -r chmod +x \
     && make -j$(nproc) \
     && make install \
     && make sounds-install \
