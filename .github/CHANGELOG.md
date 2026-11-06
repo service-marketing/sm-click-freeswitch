@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1-alpha.5](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.0.1-alpha.4...v1.0.1-alpha.5) (2026-11-06)
+
+
+### Bug Fixes
+
+* build sofia-sip 1.13.19 from source inside CI base image ([ea84a2d](https://github.com/service-marketing/sm-click-freeswitch/commit/ea84a2d12bc7838cc9b5b0c0ae083ffe77e2d8be))
+
 ### [1.0.1-alpha.4](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.0.1-alpha.3...v1.0.1-alpha.4) (2026-11-06)
 
 
