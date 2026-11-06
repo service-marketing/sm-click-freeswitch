@@ -18,7 +18,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     # toolchain
-    build-essential autoconf automake libtool libtool-bin pkg-config cmake wget \
+    build-essential autoconf automake autoconf-archive libtool libtool-bin pkg-config cmake wget \
     # TLS / crypto
     libssl-dev \
     # audio / codecs
@@ -35,7 +35,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libedit-dev libtiff-dev zlib1g-dev uuid-dev \
     libyaml-dev libncurses5-dev libglib2.0-dev libmemcached-dev \
     libsqlite3-dev libmariadb-dev \
-    libavformat-dev libavcodec-dev libswscale-dev libavutil-dev libvpx-dev \
+    libavformat-dev libavcodec-dev libswscale-dev libavutil-dev \
     libhiredis-dev libmongoc-dev libshout3-dev libmp3lame-dev \
     # certs + locale
     ca-certificates locales \
@@ -82,6 +82,7 @@ RUN ./bootstrap.sh -j \
     && sed -i \
          -e '/mod_verto/s/^/#/' \
          -e '/mod_signalwire/s/^/#/' \
+         -e '/mod_av\b/s/^/#/' \
          modules.conf \
     && ./configure \
          --prefix=/usr/local/freeswitch \
