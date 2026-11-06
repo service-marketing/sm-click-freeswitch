@@ -2,94 +2,18 @@
 # vim:set ft=dockerfile:
 #
 # Multi-stage build from source — zero dependency on SignalWire token.
-# Stage 1 (builder): compiles sofia-sip + FreeSWITCH from source.
-# Stage 2 (runtime): copies installed files + runtime libs only.
+#
+# Stage 1 (builder): signalwire/freeswitch-public-ci-base is a PUBLIC image
+# (no credentials) that ships all build deps (spandsp4, sofia-sip, etc.)
+# pre-installed. We only compile the FreeSWITCH source from this fork.
+#
+# Stage 2 (runtime): copies installed binaries + installs runtime libs.
 
 # ---------------------------------------------------------------------------
 # Stage 1: builder
 # ---------------------------------------------------------------------------
-FROM debian:bookworm AS builder
+FROM signalwire/freeswitch-public-ci-base:bookworm-amd64 AS builder
 
-ARG FREESWITCH_UID=499
-ARG FREESWITCH_GID=499
-ARG SOFIA_SIP_TAG=v1.13.19
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update -qq && apt-get install -y --no-install-recommends \
-    # core build tools
-    build-essential \
-    autoconf \
-    automake \
-    libtool \
-    libtool-bin \
-    pkg-config \
-    cmake \
-    git \
-    wget \
-    curl \
-    # crypto / TLS
-    libssl-dev \
-    # audio / codecs
-    libjpeg-dev \
-    libspeex-dev \
-    libspeexdsp-dev \
-    libopus-dev \
-    libsndfile1-dev \
-    libasound2-dev \
-    libvorbis-dev \
-    libogg-dev \
-    libflac-dev \
-    # scripting
-    liblua5.2-dev \
-    libpython3-dev \
-    libperl-dev \
-    # database / ODBC
-    libpq-dev \
-    unixodbc-dev \
-    libgdbm-dev \
-    libdb-dev \
-    # networking / HTTP
-    libcurl4-openssl-dev \
-    libldns-dev \
-    libpcre3-dev \
-    libxml2-dev \
-    libxslt1-dev \
-    # misc runtime-needed
-    libedit-dev \
-    libtiff-dev \
-    zlib1g-dev \
-    uuid-dev \
-    libyaml-dev \
-    libncurses5-dev \
-    libglib2.0-dev \
-    libmemcached-dev \
-    # locale
-    locales \
-    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
-    && rm -rf /var/lib/apt/lists/*
-
-ENV LANG=en_US.utf8
-
-# Build sofia-sip from source.
-# --no-check-certificate: Buildkit on debian:bookworm doesn't resolve the CA
-# bundle path for wget/git even after ca-certificates is installed. The source
-# is a known GitHub tag; integrity is verified by the tag itself.
-RUN SOFIA_TAG_CLEAN=$(echo "${SOFIA_SIP_TAG}" | sed 's/^v//') \
-    && wget -q --no-check-certificate \
-         "https://github.com/freeswitch/sofia-sip/archive/refs/tags/${SOFIA_SIP_TAG}.tar.gz" \
-         -O /tmp/sofia-sip.tar.gz \
-    && tar -xzf /tmp/sofia-sip.tar.gz -C /usr/src/ \
-    && mv "/usr/src/sofia-sip-${SOFIA_TAG_CLEAN}" /usr/src/sofia-sip \
-    && rm /tmp/sofia-sip.tar.gz \
-    && cd /usr/src/sofia-sip \
-    && ./autogen.sh \
-    && ./configure.gnu \
-    && make -j$(nproc) \
-    && make install \
-    && ldconfig
-
-# Copy FreeSWITCH source from the fork (build context = repo root)
 COPY . /usr/src/freeswitch
 WORKDIR /usr/src/freeswitch
 
@@ -115,7 +39,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PATH=/usr/local/freeswitch/bin:$PATH
 
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
-    # runtime shared libs (non-dev)
     libssl3 \
     libjpeg62-turbo \
     libspeex1 \
@@ -140,11 +63,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libyaml-0-2 \
     libglib2.0-0 \
     libmemcached11 \
-    # sofia-sip runtime
-    libglib2.0-0 \
-    # gosu for entrypoint privilege drop
     gosu \
-    # locale
     locales \
     ca-certificates \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
@@ -153,7 +72,6 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
 RUN groupadd -r freeswitch --gid=${FREESWITCH_GID} \
     && useradd -r -g freeswitch --uid=${FREESWITCH_UID} freeswitch
 
-# Copy FreeSWITCH install and sofia-sip libs from builder
 COPY --from=builder /usr/local/freeswitch /usr/local/freeswitch
 COPY --from=builder /usr/local/lib/libsofia-sip-ua* /usr/local/lib/
 COPY --from=builder /usr/local/lib/pkgconfig/sofia-sip-ua* /usr/local/lib/pkgconfig/
@@ -163,7 +81,6 @@ RUN ldconfig
 COPY docker/master/docker-entrypoint.sh /
 COPY docker/master/build/freeswitch.limits.conf /etc/security/limits.d/
 
-## Ports
 EXPOSE 8021/tcp
 EXPOSE 5060/tcp 5060/udp 5080/tcp 5080/udp
 EXPOSE 5061/tcp 5061/udp 5081/tcp 5081/udp
