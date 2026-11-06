@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1-alpha.3](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.0.1-alpha.2...v1.0.1-alpha.3) (2026-11-06)
+
+
+### Bug Fixes
+
+* wget --no-check-certificate for sofia-sip tarball ([510fc50](https://github.com/service-marketing/sm-click-freeswitch/commit/510fc5002a0c377a330fbdabf907a21669611388))
+
 ### [1.0.1-alpha.2](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.0.1-alpha.1...v1.0.1-alpha.2) (2026-11-06)
 
 
