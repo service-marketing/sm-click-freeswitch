@@ -26,9 +26,9 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libsndfile1-dev libasound2-dev libvorbis-dev libogg-dev \
     libcodec2-dev \
     # scripting
-    liblua5.2-dev libpython3-dev libperl-dev \
+    liblua5.2-dev python3-dev libperl-dev \
     # database / ODBC
-    libpq-dev unixodbc-dev libgdbm-dev libdb-dev \
+    libpq-dev unixodbc-dev libgdbm-dev libgdbm-compat-dev libdb-dev \
     # network / HTTP / LDAP
     libcurl4-openssl-dev libldns-dev libpcre3-dev \
     libxml2-dev libxslt1-dev libldap-dev \
@@ -39,7 +39,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libvpx-dev libmagickcore-dev libvlc-dev \
     libhiredis-dev libmongoc-dev \
     libshout3-dev libmp3lame-dev libmpg123-dev \
-    librabbitmq-dev \
+    librabbitmq-dev libsnmp-dev \
     # certs + locale
     ca-certificates locales \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
@@ -81,6 +81,17 @@ COPY . /usr/src/freeswitch
 WORKDIR /usr/src/freeswitch
 
 RUN sed -i 's/APR_ADDTO(SWITCH_AM_CFLAGS, -Werror)//g' configure.ac \
+    && find . -type f \( -name "*.sh" -o -name "*.m4" -o -name "*.ac" \
+         -o -name "*.pl" -o -name "*.la" -o -name "libtool" \
+         -o -name "configure" -o -name "configure.gnu" \
+         -o -name "config.guess" -o -name "config.sub" \
+         -o -name "install-sh" -o -name "PrintPath" \
+         -o -name "Makefile.in" \) \
+         | xargs sed -i 's/\r$//' \
+    && find . -type f \( -name "*.sh" -o -name "configure" -o -name "configure.gnu" \
+         -o -name "config.guess" -o -name "config.sub" \
+         -o -name "install-sh" -o -name "PrintPath" \) \
+         | xargs chmod +x \
     && ./bootstrap.sh -j \
     && cp build/modules.conf.most modules.conf \
     && sed -i \
@@ -97,10 +108,15 @@ RUN sed -i 's/APR_ADDTO(SWITCH_AM_CFLAGS, -Werror)//g' configure.ac \
          -e '/mod_flite/s/^/#/' \
          -e '/mod_erlang_event/s/^/#/' \
          -e '/mod_mongo/s/^/#/' \
+         -e '/mod_python3/s/^/#/' \
+         -e '/mod_pocketsphinx/s/^/#/' \
          modules.conf \
     && ./configure \
          --prefix=/usr/local/freeswitch \
          --exec-prefix=/usr/local/freeswitch \
+    && mkdir -p libs/libvpx && ar rcs libs/libvpx/libvpx.a \
+    && find . -name "libtool" -o -name "*.la" | xargs sed -i 's/\r$//' \
+    && find . -name "libtool" | xargs -r chmod +x \
     && make -j$(nproc) \
     && make install \
     && make sounds-install \
