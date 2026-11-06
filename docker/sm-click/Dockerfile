@@ -24,7 +24,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     # audio / codecs
     libjpeg-dev libspeex-dev libspeexdsp-dev libopus-dev \
     libsndfile1-dev libasound2-dev libvorbis-dev libogg-dev \
-    libcodec2-dev libilbc-dev \
+    libcodec2-dev \
     # scripting
     liblua5.2-dev libpython3-dev libperl-dev \
     # database / ODBC
@@ -40,7 +40,6 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libhiredis-dev libmongoc-dev \
     libshout3-dev libmp3lame-dev libmpg123-dev \
     librabbitmq-dev \
-    libflite1-dev \
     # certs + locale
     ca-certificates locales \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
@@ -93,6 +92,8 @@ RUN ./bootstrap.sh -j \
          -e '/mod_cv\b/s/^/#/' \
          -e '/mod_java/s/^/#/' \
          -e '/mod_managed/s/^/#/' \
+         -e '/mod_ilbc/s/^/#/' \
+         -e '/mod_flite/s/^/#/' \
          modules.conf \
     && ./configure \
          --prefix=/usr/local/freeswitch \
