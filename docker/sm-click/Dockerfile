@@ -18,7 +18,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     # toolchain
-    build-essential autoconf automake autoconf-archive libtool libtool-bin pkg-config cmake wget \
+    build-essential autoconf automake autoconf-archive libtool libtool-bin pkg-config cmake wget yasm \
     # TLS / crypto
     libssl-dev \
     # audio / codecs
