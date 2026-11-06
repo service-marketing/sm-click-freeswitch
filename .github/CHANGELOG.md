@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.4](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.3...v1.1.0-alpha.4) (2026-11-06)
+
+
+### Bug Fixes
+
+* replace FFmpeg build-deps with system libvpx-dev ([be626ab](https://github.com/service-marketing/sm-click-freeswitch/commit/be626ab59430e270733745c9d9a8be092e625fc1))
+
 ## [1.1.0-alpha.3](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.2...v1.1.0-alpha.3) (2026-11-06)
 
 
