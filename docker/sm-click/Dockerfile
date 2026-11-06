@@ -24,19 +24,23 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     # audio / codecs
     libjpeg-dev libspeex-dev libspeexdsp-dev libopus-dev \
     libsndfile1-dev libasound2-dev libvorbis-dev libogg-dev \
+    libcodec2-dev libilbc-dev \
     # scripting
     liblua5.2-dev libpython3-dev libperl-dev \
     # database / ODBC
     libpq-dev unixodbc-dev libgdbm-dev libdb-dev \
-    # network / HTTP
+    # network / HTTP / LDAP
     libcurl4-openssl-dev libldns-dev libpcre3-dev \
-    libxml2-dev libxslt1-dev \
+    libxml2-dev libxslt1-dev libldap-dev \
     # misc
     libedit-dev libtiff-dev zlib1g-dev uuid-dev \
     libyaml-dev libncurses5-dev libglib2.0-dev libmemcached-dev \
     libsqlite3-dev libmariadb-dev \
-    libvpx-dev \
-    libhiredis-dev libmongoc-dev libshout3-dev libmp3lame-dev librabbitmq-dev \
+    libvpx-dev libmagickcore-dev libvlc-dev \
+    libhiredis-dev libmongoc-dev \
+    libshout3-dev libmp3lame-dev libmpg123-dev \
+    librabbitmq-dev \
+    libflite1-dev \
     # certs + locale
     ca-certificates locales \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
@@ -83,6 +87,12 @@ RUN ./bootstrap.sh -j \
          -e '/mod_verto/s/^/#/' \
          -e '/mod_signalwire/s/^/#/' \
          -e '/mod_av\b/s/^/#/' \
+         -e '/mod_bv/s/^/#/' \
+         -e '/mod_silk/s/^/#/' \
+         -e '/mod_siren/s/^/#/' \
+         -e '/mod_cv\b/s/^/#/' \
+         -e '/mod_java/s/^/#/' \
+         -e '/mod_managed/s/^/#/' \
          modules.conf \
     && ./configure \
          --prefix=/usr/local/freeswitch \
