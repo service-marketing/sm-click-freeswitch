@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.8](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.7...v1.1.0-alpha.8) (2026-11-06)
+
+
+### Bug Fixes
+
+* disable mod_erlang_event (needs erlang-dev/ei.h) ([118b55e](https://github.com/service-marketing/sm-click-freeswitch/commit/118b55ee225214f3203464a31628f0c15097a8e8))
+
 ## [1.1.0-alpha.7](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.6...v1.1.0-alpha.7) (2026-11-06)
 
 
