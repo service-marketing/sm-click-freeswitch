@@ -142,11 +142,8 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker Image
-        env:
-          SIGNALWIRE_TOKEN: ${{ secrets.SIGNALWIRE_TOKEN }}
         run: |
-          DOCKER_BUILDKIT=1 docker build \
-            --secret id=signalwire_token,env=SIGNALWIRE_TOKEN \
+          docker build \
             -f docker/sm-click/Dockerfile \
             -t $ECR_REPOSITORY \
             .
