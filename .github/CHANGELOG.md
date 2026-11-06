@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.2](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.1...v1.1.0-alpha.2) (2026-11-06)
+
+
+### Bug Fixes
+
+* disable libks modules, add missing deps, use modules.conf.most ([39d71c1](https://github.com/service-marketing/sm-click-freeswitch/commit/39d71c107c9aa86967a64b70cace24fe4ae626d6))
+
 ## [1.1.0-alpha.1](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.0...v1.1.0-alpha.1) (2026-11-06)
 
 
