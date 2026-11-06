@@ -3,16 +3,29 @@
 #
 # Multi-stage build from source — zero dependency on SignalWire token.
 #
-# Stage 1 (builder): signalwire/freeswitch-public-ci-base is a PUBLIC image
-# (no credentials) that ships all build deps (spandsp4, sofia-sip, etc.)
-# pre-installed. We only compile the FreeSWITCH source from this fork.
+# Stage 1 (builder): uses the public SignalWire CI base image (no token)
+# which has all build deps (spandsp4, etc.) pre-installed. We compile
+# sofia-sip 1.13.19 (required by FS master) and then FreeSWITCH itself.
 #
-# Stage 2 (runtime): copies installed binaries + installs runtime libs.
+# Stage 2 (runtime): copies binaries + installs runtime shared libs.
 
 # ---------------------------------------------------------------------------
 # Stage 1: builder
 # ---------------------------------------------------------------------------
 FROM signalwire/freeswitch-public-ci-base:bookworm-amd64 AS builder
+
+ARG SOFIA_SIP_TAG=v1.13.19
+
+# Build sofia-sip >= 1.13.19 from source.
+# CI base image has correct CA certs so git/wget work without workarounds.
+RUN git clone --depth 1 --branch ${SOFIA_SIP_TAG} \
+      https://github.com/freeswitch/sofia-sip.git /usr/src/sofia-sip \
+    && cd /usr/src/sofia-sip \
+    && ./autogen.sh \
+    && ./configure.gnu \
+    && make -j$(nproc) \
+    && make install \
+    && ldconfig
 
 COPY . /usr/src/freeswitch
 WORKDIR /usr/src/freeswitch
