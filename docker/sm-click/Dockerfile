@@ -36,7 +36,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libyaml-dev libncurses5-dev libglib2.0-dev libmemcached-dev \
     libsqlite3-dev libmariadb-dev \
     libvpx-dev \
-    libhiredis-dev libmongoc-dev libshout3-dev libmp3lame-dev \
+    libhiredis-dev libmongoc-dev libshout3-dev libmp3lame-dev librabbitmq-dev \
     # certs + locale
     ca-certificates locales \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
