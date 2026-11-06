@@ -34,8 +34,9 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     # misc
     libedit-dev libtiff-dev zlib1g-dev uuid-dev \
     libyaml-dev libncurses5-dev libglib2.0-dev libmemcached-dev \
-    libsqlite3-dev libmariadb-dev libjpeg62-turbo-dev \
-    libavformat-dev libavcodec-dev libswscale-dev libavutil-dev \
+    libsqlite3-dev libmariadb-dev \
+    libavformat-dev libavcodec-dev libswscale-dev libavutil-dev libvpx-dev \
+    libhiredis-dev libmongoc-dev libshout3-dev libmp3lame-dev \
     # certs + locale
     ca-certificates locales \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
@@ -77,6 +78,11 @@ COPY . /usr/src/freeswitch
 WORKDIR /usr/src/freeswitch
 
 RUN ./bootstrap.sh -j \
+    && cp build/modules.conf.most modules.conf \
+    && sed -i \
+         -e '/mod_verto/s/^/#/' \
+         -e '/mod_signalwire/s/^/#/' \
+         modules.conf \
     && ./configure \
          --prefix=/usr/local/freeswitch \
          --exec-prefix=/usr/local/freeswitch \
