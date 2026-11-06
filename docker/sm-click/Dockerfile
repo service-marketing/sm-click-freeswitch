@@ -18,7 +18,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     # toolchain
-    build-essential autoconf automake autoconf-archive libtool libtool-bin pkg-config cmake wget yasm \
+    build-essential autoconf automake autoconf-archive libtool libtool-bin pkg-config cmake wget yasm git \
     # TLS / crypto
     libssl-dev \
     # audio / codecs
@@ -26,9 +26,9 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libsndfile1-dev libasound2-dev libvorbis-dev libogg-dev \
     libcodec2-dev \
     # scripting
-    liblua5.2-dev libpython3-dev libperl-dev \
+    liblua5.2-dev python3-dev libperl-dev \
     # database / ODBC
-    libpq-dev unixodbc-dev libgdbm-dev libdb-dev \
+    libpq-dev unixodbc-dev libgdbm-dev libgdbm-compat-dev libdb-dev \
     # network / HTTP / LDAP
     libcurl4-openssl-dev libldns-dev libpcre3-dev \
     libxml2-dev libxslt1-dev libldap-dev \
@@ -39,7 +39,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libvpx-dev libmagickcore-dev libvlc-dev \
     libhiredis-dev libmongoc-dev \
     libshout3-dev libmp3lame-dev libmpg123-dev \
-    librabbitmq-dev \
+    librabbitmq-dev libsnmp-dev \
     # certs + locale
     ca-certificates locales \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
@@ -80,7 +80,9 @@ RUN SOFIA_CLEAN=$(echo "${SOFIA_SIP_TAG}" | sed 's/^v//') \
 COPY . /usr/src/freeswitch
 WORKDIR /usr/src/freeswitch
 
-RUN sed -i 's/APR_ADDTO(SWITCH_AM_CFLAGS, -Werror)//g' configure.ac \
+RUN git checkout -- . \
+    && sed -i 's/APR_ADDTO(SWITCH_AM_CFLAGS, -Werror)//g' configure.ac \
+    && chmod +x bootstrap.sh \
     && ./bootstrap.sh -j \
     && cp build/modules.conf.most modules.conf \
     && sed -i \
@@ -97,10 +99,13 @@ RUN sed -i 's/APR_ADDTO(SWITCH_AM_CFLAGS, -Werror)//g' configure.ac \
          -e '/mod_flite/s/^/#/' \
          -e '/mod_erlang_event/s/^/#/' \
          -e '/mod_mongo/s/^/#/' \
+         -e '/mod_python3/s/^/#/' \
+         -e '/mod_pocketsphinx/s/^/#/' \
          modules.conf \
     && ./configure \
          --prefix=/usr/local/freeswitch \
          --exec-prefix=/usr/local/freeswitch \
+    && mkdir -p libs/libvpx && ar rcs libs/libvpx/libvpx.a \
     && make -j$(nproc) \
     && make install \
     && make sounds-install \
