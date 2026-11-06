@@ -80,7 +80,8 @@ RUN SOFIA_CLEAN=$(echo "${SOFIA_SIP_TAG}" | sed 's/^v//') \
 COPY . /usr/src/freeswitch
 WORKDIR /usr/src/freeswitch
 
-RUN ./bootstrap.sh -j \
+RUN sed -i 's/APR_ADDTO(SWITCH_AM_CFLAGS, -Werror)//g' configure.ac \
+    && ./bootstrap.sh -j \
     && cp build/modules.conf.most modules.conf \
     && sed -i \
          -e '/mod_verto/s/^/#/' \
