@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.5](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.4...v1.1.0-alpha.5) (2026-11-06)
+
+
+### Bug Fixes
+
+* add yasm for libvpx bundled configure ([8772067](https://github.com/service-marketing/sm-click-freeswitch/commit/87720676e3cfe83c7faa12fcee13b8669ce6a43e))
+
 ## [1.1.0-alpha.4](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.3...v1.1.0-alpha.4) (2026-11-06)
 
 
