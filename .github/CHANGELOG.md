@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.6](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.5...v1.1.0-alpha.6) (2026-11-06)
+
+
+### Bug Fixes
+
+* add all missing deps and disable unavailable-dep modules ([358c51b](https://github.com/service-marketing/sm-click-freeswitch/commit/358c51bdbc62b9f92baab065c4574c3d2fb9ca84))
+* add librabbitmq-dev for mod_amqp ([1a29b46](https://github.com/service-marketing/sm-click-freeswitch/commit/1a29b468b6e9d70ce9eea0b410a38b0d049e959b))
+
 ## [1.1.0-alpha.5](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.4...v1.1.0-alpha.5) (2026-11-06)
 
 
