@@ -95,6 +95,7 @@ RUN ./bootstrap.sh -j \
          -e '/mod_ilbc/s/^/#/' \
          -e '/mod_flite/s/^/#/' \
          -e '/mod_erlang_event/s/^/#/' \
+         -e '/mod_mongo/s/^/#/' \
          modules.conf \
     && ./configure \
          --prefix=/usr/local/freeswitch \
