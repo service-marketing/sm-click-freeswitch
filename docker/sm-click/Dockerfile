@@ -71,9 +71,13 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
 
 ENV LANG=en_US.utf8
 
-# Build sofia-sip from source (public GitHub — no token)
-RUN git clone --depth 1 --branch ${SOFIA_SIP_TAG} \
-      https://github.com/freeswitch/sofia-sip.git /usr/src/sofia-sip \
+# Build sofia-sip from source (wget tarball — avoids git SSL CA issues on Debian)
+RUN SOFIA_TAG_CLEAN=$(echo "${SOFIA_SIP_TAG}" | sed 's/^v//') \
+    && wget -q "https://github.com/freeswitch/sofia-sip/archive/refs/tags/${SOFIA_SIP_TAG}.tar.gz" \
+         -O /tmp/sofia-sip.tar.gz \
+    && tar -xzf /tmp/sofia-sip.tar.gz -C /usr/src/ \
+    && mv "/usr/src/sofia-sip-${SOFIA_TAG_CLEAN}" /usr/src/sofia-sip \
+    && rm /tmp/sofia-sip.tar.gz \
     && cd /usr/src/sofia-sip \
     && ./autogen.sh \
     && ./configure.gnu \
