@@ -129,6 +129,10 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     libpq5 unixodbc libcurl4 libldns3 libpcre3 libxml2 libxslt1.1 \
     libedit2 libtiff6 zlib1g uuid-runtime libyaml-0-2 \
     libglib2.0-0 libmemcached11 \
+    # Exigidas pelo próprio libfreeswitch.so; sem elas o binário não carrega
+    libsqlite3-0 libfreetype6 libpng16-16 \
+    # Exigidas por módulos compilados (codec2, hiredis, amqp, shout, perl, snmp, cluechoo)
+    libcodec2-1.0 libhiredis0.14 librabbitmq4 libshout3 libperl5.36 libsnmp40 libncurses6 \
     gosu locales ca-certificates \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
