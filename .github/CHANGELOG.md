@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.11](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.10...v1.1.0-alpha.11) (2026-11-09)
+
+
+### Bug Fixes
+
+* install missing runtime libraries in FreeSWITCH image ([e251d6b](https://github.com/service-marketing/sm-click-freeswitch/commit/e251d6b37a6f38561fdf6d3a6624c95967824ac5))
+
 ## [1.1.0-alpha.10](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.9...v1.1.0-alpha.10) (2026-11-06)
 
 
