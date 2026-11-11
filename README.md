@@ -1,79 +1,122 @@
-# FreeSWITCH
+<img width="1477" height="554" alt="banner-fork-freeswitch" src="https://github.com/user-attachments/assets/f57714ff-24d9-428c-bfbc-eedae15ddc4e" />
 
-FreeSWITCH is a Software Defined Telecom Stack enabling the digital transformation from proprietary telecom switches to a versatile software implementation that runs on any commodity hardware. From a Raspberry PI to a multi-core server, FreeSWITCH can unlock the telecommunications potential of any device. Combined with our hosted cloud platform, SignalWire, FreeSWITCH can interconnect with the outside world and scale to any size.
+[![Feature Branch to Develop](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/1-commits.yml/badge.svg)](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/1-commits.yml)
+[![Build and Push to ECR - Develop](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/2-develop.yml/badge.svg)](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/2-develop.yml)
+[![Build & Deploy - Production](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/4-production.yml/badge.svg)](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/4-production.yml)
 
-Visit  [https://signalwire.com](https://signalwire.com/)  or https://github.com/signalwire for more info.
+Fork do [FreeSWITCH](https://github.com/signalwire/freeswitch) usado pelo SM Click para gerar a **imagem base própria do FreeSWITCH**, compilada do código-fonte sem depender de nenhum serviço, token ou imagem da SignalWire. A imagem é publicada no ECR (`sm-click-freeswitch`) de dev e de produção e serve de `FROM` para o [`sm-click-sip-server`](https://github.com/service-marketing/sm-click-sip-server), que adiciona a nossa configuração e o roteador das chamadas.
 
-## Getting Started
+> Este repositório não tem configuração do SM Click nem roda em lugar nenhum: ele só builda e publica a imagem. Perfis, ramais, dialplan e tronco ficam no `sm-click-sip-server`.
 
-FreeSWITCH is available on [Github](https://github.com/signalwire/freeswitch) in source code format.  You can checkout the development branch and build for many popular platforms including Linux, Windows, MacOSX and BSD.  There is an issue tracker and pull request system available as part of the repo online.
+## Índice
 
-See https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/ for more detailed instructions.
+- [Ambiente de desenvolvimento](#ambiente-de-desenvolvimento)
+- [Testes](#testes)
+- [Deploy](#deploy)
+- [Contribuição](#contribuição)
+- [O que tem aqui dentro](#o-que-tem-aqui-dentro)
+- [Contato](#contato)
 
-## Additional Help
+## Ambiente de desenvolvimento
 
-If you need assistance or have an interest in using a commercially supported build, you can contact coreteam@freeswitch.com to learn about professional services to support your project.
+```bash
+DOCKER_BUILDKIT=1 docker build -f docker/sm-click/Dockerfile -t sm-click-freeswitch:local .
 
-## Voice-over-IP services - SIP / SMS - App Integrations
+# Sobe com a config vanilla e confere se está UP
+docker run -d --name fs-local sm-click-freeswitch:local
+docker exec fs-local fs_cli -x status
 
-[SignalWire](https://signalwire.com) is the primary sponsor of the FreeSWITCH project and was founded by the original developers of FreeSWITCH. SignalWire provides scalable services to enhance and scale your project such as SMS, SIP, Serverless Application hosting as well as programmable telecom. mod_signalwire which is distributed in this code base allows you to instantly pair with SignalWire and extend your FreeSWITCH.
+# Nenhuma lib ausente (fora de módulos não usados)
+docker run --rm --entrypoint sh sm-click-freeswitch:local -c \
+  'for f in /usr/local/freeswitch/bin/freeswitch /usr/local/freeswitch/lib/*.so* /usr/local/freeswitch/mod/*.so; do ldd "$f" | grep "not found" | sed "s|^|$f: |"; done'
+```
 
-## Documentation
+Build leva de 30 a 60 min num runner de 4 cores. No Windows, clone com `core.autocrlf=false` ou confie no `.gitattributes`: arquivos de build com CRLF quebram o `bootstrap.sh`.
 
-The main index for documentation is available at:
+## Testes
 
-  * https://freeswitch.org/confluence/
+Este repositório não tem testes próprios nem gate no CI além do build. A imagem é validada pelo smoke test do `sm-click-sip-server` (`docker/smoke_test.sh`), que sobe o FreeSWITCH com a nossa config e confere módulos, perfis, WSS e healthcheck. Antes de atualizar `FREESWITCH_IMAGE_TAG` lá, rode o smoke test com a tag nova.
 
+## Deploy
 
-### Release notes:
+Não há deploy de serviço: o CI builda `docker/sm-click/Dockerfile` e publica a imagem no ECR. A branch de produção deste repositório é `master` (herdada do original), não `main`.
 
-  * https://freeswitch.org/confluence/display/FREESWITCH/Release+Notes
+| Workflow | Gatilho | O que faz |
+|---|---|---|
+| `1-commits.yml` | push em `feature/*` | abre PR para `develop` |
+| `2-develop.yml` | merge na `develop` | versão alpha pelo Conventional Commit (`standard-version`), build, push no ECR de dev, cria `release/X.Y.Z` e a PR |
+| `3-release.yml` | push em `release/*` | abre a PR `release/X.Y.Z -> master` |
+| `4-production.yml` | push na `master` | build e push no ECR de produção com a versão da release |
+| `5-hotfix.yml` | push em `hotfix/*` | abre PRs para `master` e `develop` |
 
-### Install from packages
+A tag da imagem é a versão do `.github/package.json` (`X.Y.Z-alpha.N` em dev; em produção, a versão que está na `master`). Versão e changelog ficam em `.github/package.json` e `.github/CHANGELOG.md`.
 
-Step by step tutorials to install FreeSWITCH from packages:
+**Secrets do repositório:** `AWS_REGION`, `ECR_REPOSITORY`, `AWS_ACCOUNT_ID_DEV`/`AWS_ACCESS_KEY_ID_DEV`/`AWS_SECRET_ACCESS_KEY_DEV`, `AWS_ACCOUNT_ID_PROD`/`AWS_ACCESS_KEY_ID_PROD`/`AWS_SECRET_ACCESS_KEY_PROD`, `GIT_SECRET_TOKEN` (PRs automáticas e push da versão).
 
-  * [Using FSGET](/scripts/packaging) [<b>Recommended</b>]
-  * [Debian](https://freeswitch.org/confluence/display/FREESWITCH/Debian)
-  * [Raspberry Pi](https://freeswitch.org/confluence/display/FREESWITCH/Raspberry+Pi)
-  * [CentOS 7](https://freeswitch.org/confluence/display/FREESWITCH/CentOS+7+and+RHEL+7)
+O repositório ECR `sm-click-freeswitch` precisa existir nas duas contas; este repositório não cria infraestrutura.
 
-### Build from source
+## Contribuição
 
-Example Dockerfiles to build FreeSWITCH and dependencies from source:
-  * https://github.com/signalwire/freeswitch/tree/master/docker/examples
+1. Crie uma branch a partir de `develop` (`git checkout -b feature/minha-feature`)
+2. Commit suas alterações (`git commit -m 'fix: minha correção'` — mensagem semântica, define o bump de versão automático)
+3. Suba a branch (`git push origin feature/minha-feature`)
+4. A PR para `develop` é aberta automaticamente pelo CI
+5. Ao mesclar em `develop`, uma tag alpha nova é publicada no ECR de dev — rode o smoke test do `sm-click-sip-server` com ela e **atualize a variável `FREESWITCH_IMAGE_TAG`** de lá para usá-la
+6. Para trazer uma versão nova do [FreeSWITCH original](https://github.com/signalwire/freeswitch), faça o merge dele numa `feature/*` e rode o build, o `ldd` e o smoke test antes de abrir a PR
 
-Step by step tutorials to build FreeSWITCH with provided dependency packages:
-  * [Debian](https://freeswitch.org/confluence/display/FREESWITCH/Debian#Debian-buildfromsource) [<b>Recommended</b>]
-  * [Raspberry Pi](https://freeswitch.org/confluence/display/FREESWITCH/Raspberry+Pi)
-  * [CentOS 7](https://freeswitch.org/confluence/display/FREESWITCH/CentOS+7+and+RHEL+7)
+## O que tem aqui dentro
 
-### How to build Debian packages
+Quase tudo é o código do FreeSWITCH original (documentação em [developer.signalwire.com/freeswitch](https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/), licença MPL 1.1, ver [`LICENSE`](LICENSE)). O que é nosso:
 
-  * [Using FSDEB](/scripts/packaging/build)
+### Estrutura
 
-## Downloads
+```
+docker/sm-click/
+└── Dockerfile          # Build completo em dois estágios (debian:bookworm), base de todas as tags publicadas
 
-  * [Tarballs](https://files.freeswitch.org/releases/freeswitch/)
-  * [Windows Installer](http://files.freeswitch.org/windows/installer/x64/)
-  * [Windows Sound Packages](https://github.com/freeswitch/freeswitch-sounds/releases)
+.github/
+├── workflows/
+│   ├── 1-commits.yml     # push em feature/* -> PR para develop
+│   ├── 2-develop.yml     # merge na develop -> versão alpha, build, push no ECR de dev, branch release/* e PR
+│   ├── 3-release.yml     # push em release/* -> PR para master
+│   ├── 4-production.yml  # push na master -> build e push no ECR de produção
+│   └── 5-hotfix.yml      # push em hotfix/* -> PRs para master e develop
+├── package.json        # Versão da imagem (standard-version)
+└── CHANGELOG.md
 
-## Contributions
+.gitattributes          # Força LF em scripts e arquivos de build (o bootstrap quebra com CRLF vindo do Windows)
+```
 
-GitHub pull requests are the recommended way to contribute to the FreeSWITCH source code:
+O `docker/master/docker-entrypoint.sh` e o `freeswitch.limits.conf` do original são reaproveitados no estágio final.
 
-  * https://github.com/signalwire/freeswitch/pulls
+### Stack
 
-## Community
+| | |
+|---|---|
+| Base | `debian:bookworm` nos dois estágios (sem imagem da SignalWire) |
+| FreeSWITCH | código deste fork (`1.11.x`), instalado em `/usr/local/freeswitch` |
+| Dependências compiladas | sofia-sip `v1.13.19` (tag pública) e spandsp (branch `master` do GitHub da FreeSWITCH) |
+| Módulos | `modules.conf.most` menos os que dependem de fornecedor ou de lib indisponível no Debian |
+| Publicação | ECR `sm-click-freeswitch`, contas de dev e produção, tag = versão do `.github/package.json` |
 
-Slack is our chat system where the developers, the FreeSWITCH team, and the most active users are present.
-This is the place to get answers faster and chat with other users in real time. All you need to do is enter your email and verify it on the Slack signup page and you are ready to join in the discussion!
+### Como funciona
 
-Slack Community:
-  * https://signalwire.community/
+1. **Estágio `builder`**: instala o toolchain e as `-dev` do Debian, compila spandsp e sofia-sip a partir das fontes públicas e depois o FreeSWITCH deste repositório.
+   - Remove o `-Werror` do `configure.ac` (warnings de libs novas do Debian quebravam o build).
+   - Parte do `modules.conf.most` e comenta `mod_signalwire`, `mod_verto`, `mod_av`, `mod_bv`, `mod_silk`, `mod_siren`, `mod_cv`, `mod_java`, `mod_managed`, `mod_ilbc`, `mod_flite`, `mod_erlang_event`, `mod_mongo`, `mod_python3` e `mod_pocketsphinx`.
+   - Instala sons (`sounds-install`) e música de espera (`moh-install`).
+2. **Estágio `runtime`**: Debian limpo só com as bibliotecas de execução, o usuário `freeswitch` (uid/gid 499) e o que saiu do builder (`/usr/local/freeswitch`, `libsofia-sip-ua*`, `libspandsp*`).
+   - A config vanilla fica em `/usr/local/freeswitch/etc/freeswitch` e os certificados em `/usr/local/freeswitch/certs`; o `sm-click-sip-server` passa `-conf`/`-certs` para os seus caminhos.
+   - `HEALTHCHECK` com `fs_cli -x status` na senha padrão do ESL; o `sm-click-sip-server` sobrescreve com a senha dele.
+3. **Publicação**: o CI envia a imagem para o ECR e o `sm-click-sip-server` escolhe qual tag usar pela variável `FREESWITCH_IMAGE_TAG`.
 
-Mailing list (ARCHIVED):
+### Cuidados
 
-  * http://lists.freeswitch.org/pipermail/freeswitch-users/
+- **Biblioteca de runtime faltando não quebra o build**, só a execução: o binário não carrega (`libfreetype.so.6`...) ou um módulo falha no boot. Ao ativar um módulo ou mudar de base, rode o `ldd` de [Ambiente de desenvolvimento](#ambiente-de-desenvolvimento) antes de publicar.
+- O spandsp vem da branch `master`, então duas builds em dias diferentes podem não ser idênticas.
 
-**Thank you for using FreeSWITCH!**
+## Contato
+
+- Nome: Alex Oliveira Rocha
+- Email: alex.oliveira-rocha@servicemarketing-tecnologia.com
+- Cargo: Diretor de Tecnologia
