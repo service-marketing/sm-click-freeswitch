@@ -1,9 +1,8 @@
-<img width="1477" height="554" alt="Banner freeswitch" src="COLE_AQUI_A_URL_DO_BANNER" />
+<img width="1477" height="554" alt="banner-fork-freeswitch" src="https://github.com/user-attachments/assets/f57714ff-24d9-428c-bfbc-eedae15ddc4e" />
 
 [![Feature Branch to Develop](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/1-commits.yml/badge.svg)](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/1-commits.yml)
 [![Build and Push to ECR - Develop](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/2-develop.yml/badge.svg)](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/2-develop.yml)
 [![Build & Deploy - Production](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/4-production.yml/badge.svg)](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/4-production.yml)
-[![Hotfix - to master and Develop](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/5-hotfix.yml/badge.svg)](https://github.com/service-marketing/sm-click-freeswitch/actions/workflows/5-hotfix.yml)
 
 Fork do [FreeSWITCH](https://github.com/signalwire/freeswitch) usado pelo SM Click para gerar a **imagem base própria do FreeSWITCH**, compilada do código-fonte sem depender de nenhum serviço, token ou imagem da SignalWire. A imagem é publicada no ECR (`sm-click-freeswitch`) de dev e de produção e serve de `FROM` para o [`sm-click-sip-server`](https://github.com/service-marketing/sm-click-sip-server), que adiciona a nossa configuração e o roteador das chamadas.
 
