@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-alpha.12](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.11...v1.1.0-alpha.12) (2026-11-11)
+
 ## [1.1.0-alpha.11](https://github.com/service-marketing/sm-click-freeswitch/compare/v1.1.0-alpha.10...v1.1.0-alpha.11) (2026-11-09)
 
 
